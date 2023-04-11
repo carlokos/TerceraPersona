@@ -111,7 +111,7 @@ MonoBehaviour:
   shotCD: 1.5
   aimColliderLayerMask:
     serializedVersion: 2
-    m_Bits: 1025
+    m_Bits: 3073
   shotKey: 323
 --- !u!4 &2134314266347365414 stripped
 Transform:

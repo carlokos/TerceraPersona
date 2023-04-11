@@ -166,7 +166,7 @@ public class PlayerMov : MonoBehaviour
     {
         //reset y velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
+        //anim.SetTrigger("Jump");
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 

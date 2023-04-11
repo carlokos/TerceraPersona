@@ -14,11 +14,20 @@ public class BowBehaviour : MonoBehaviour
     [Header ("Keybinds")]
     [SerializeField] private KeyCode shotKey = KeyCode.Mouse0;
 
+    [Header("Animations")]
+    private GameObject decorativeArrow;
+
     public bool CanShoot { get => canShoot; set => canShoot = value; }
+
+    private void Start()
+    {
+        decorativeArrow = GameObject.Find("decorativeArrow");
+        decorativeArrow.SetActive(true);
+    }
 
     // Update is called once per frame
     void Update()
-    {
+    {        
         Vector3 mouseWorldPosition = Vector3.zero;
         Vector2 screenCenterPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
         Ray ray = Camera.main.ScreenPointToRay(screenCenterPoint);
@@ -29,6 +38,7 @@ public class BowBehaviour : MonoBehaviour
 
         if (Input.GetKey(shotKey) && canShoot)
         {
+            StartCoroutine(getArrowAnimation());
             canShoot = false;
             Vector3 aimDir = (mouseWorldPosition - spawnPoint.position).normalized;
             Instantiate(arrowPrefab, spawnPoint.position, Quaternion.LookRotation(aimDir, Vector3.up));
@@ -39,5 +49,12 @@ public class BowBehaviour : MonoBehaviour
     private void resetShot()
     {
         canShoot = true;
+    }
+
+    private IEnumerator getArrowAnimation()
+    {
+        decorativeArrow.SetActive(false);
+        yield return new WaitForSeconds(1.26f);
+        decorativeArrow.SetActive(true);
     }
 }
