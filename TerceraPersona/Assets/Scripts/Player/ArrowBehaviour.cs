@@ -23,8 +23,9 @@ public class ArrowBehaviour : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Enemy")){
-            Debug.Log("Enemigo derrotado");
-            Destroy(gameObject);
+            other.GetComponent<DummyBehaviour>().activateHitAnimation();
+            
         }
+        Destroy(gameObject);
     }
 }

@@ -86,6 +86,7 @@ public class PlayerMov : MonoBehaviour
         {
             state = MovementState.exploring;
             anim.SetBool("Combat", false);
+            anim.SetBool("Jump", false);
             moveSpeed = sprintSpeed;
         }
 
@@ -100,6 +101,7 @@ public class PlayerMov : MonoBehaviour
         else
         {
             state = MovementState.air;
+            anim.SetBool("Jump", true);
         }
     }
 
@@ -166,7 +168,6 @@ public class PlayerMov : MonoBehaviour
     {
         //reset y velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        //anim.SetTrigger("Jump");
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
