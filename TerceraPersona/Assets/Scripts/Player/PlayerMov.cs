@@ -6,6 +6,7 @@ public class PlayerMov : MonoBehaviour
 {
     [Header("Movement")]
     private float moveSpeed;
+    private bool canMove = true;
     [SerializeField] private float sprintSpeed;
     [SerializeField] private float groundDrag;
     
@@ -15,9 +16,13 @@ public class PlayerMov : MonoBehaviour
     [SerializeField] private float airMultiplier;
     private bool readyToJump = true;
 
+    [Header("Dodge")]
+    private bool canDodge = true; 
+
     [Header("Keybinds")]
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode drawWeaponKey = KeyCode.E;
+    [SerializeField] private KeyCode dodgeKey = KeyCode.Mouse1;
 
     [Header("Ground Check")]
     [SerializeField] private float playerHeight;
@@ -51,6 +56,7 @@ public class PlayerMov : MonoBehaviour
         combat,
         air
     }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -75,8 +81,8 @@ public class PlayerMov : MonoBehaviour
     }
 
     private void FixedUpdate()
-    {
-        MovePlayer();
+    { 
+        if(canMove) MovePlayer();
     }
 
     private void StateHandler()
@@ -85,8 +91,8 @@ public class PlayerMov : MonoBehaviour
         if(grounded && !combat)
         {
             state = MovementState.exploring;
-            anim.SetBool("Combat", false);
             anim.SetBool("Jump", false);
+            canDodge = true;
             moveSpeed = sprintSpeed;
         }
 
@@ -100,6 +106,7 @@ public class PlayerMov : MonoBehaviour
         // Mode Air
         else
         {
+            canDodge = false;
             state = MovementState.air;
             anim.SetBool("Jump", true);
         }
@@ -116,26 +123,35 @@ public class PlayerMov : MonoBehaviour
         if(Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
-
             Jump();
-
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
+        //Use or not use the bow
         if (Input.GetKeyDown(drawWeaponKey) && !combat){
             combat = true;
             equipBow();
             cameraManager.SwitchCamera(ThirdPersonCamera.CameraStyle.Combat);
         }
+
         else if(Input.GetKeyDown(drawWeaponKey) && combat){ 
             combat = false;
+            anim.SetBool("Combat", false);
             disarmBow();
             cameraManager.SwitchCamera(ThirdPersonCamera.CameraStyle.Basic);
         }
 
+        //Triggers the shot animation
         if(Input.GetKey(KeyCode.Mouse0) && combat && bowCD.CanShoot)
         {
             anim.SetTrigger("Shot");
+        }
+
+        if (Input.GetKeyDown(dodgeKey))
+        {
+            moveDirection = orientation.forward * VerticalInput + orientation.right * horizontalInput;
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * 200f, ForceMode.Force);
+            Debug.Log("Dogde");
         }
     }
 
@@ -153,6 +169,7 @@ public class PlayerMov : MonoBehaviour
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
     }
 
+    //Limits the speed of the player to feel it more smoothly
     private void SpeedControl()
     {
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
@@ -166,9 +183,14 @@ public class PlayerMov : MonoBehaviour
 
     private void Jump()
     {
-        //reset y velocity
+        //reset Y-velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    private void Roll()
+    {
+
     }
 
     private void ResetJump()

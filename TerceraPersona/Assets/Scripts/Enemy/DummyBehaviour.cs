@@ -14,6 +14,7 @@ public class DummyBehaviour : MonoBehaviour
         collider = GetComponent<Collider>();
     }
 
+    //Methos that manage the dummy's health
     public void activateHitAnimation()
     {
         life -= 1;

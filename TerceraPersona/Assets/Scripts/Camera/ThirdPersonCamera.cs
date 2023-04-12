@@ -50,6 +50,7 @@ public class ThirdPersonCamera : MonoBehaviour
             }
         }
 
+        //Activate the crosshair and change the direcction the camera looks while aiming
         else if(currentStyle == CameraStyle.Combat)
         {
             crosshair.SetActive(true);
@@ -60,6 +61,7 @@ public class ThirdPersonCamera : MonoBehaviour
         }
     }
 
+    //Methos use for switching cameras
     public void SwitchCamera(CameraStyle newStyle)
     {
         for(int i = 0; i < cameras.Length; i++)

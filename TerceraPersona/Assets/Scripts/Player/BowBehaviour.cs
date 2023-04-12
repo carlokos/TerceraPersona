@@ -25,7 +25,7 @@ public class BowBehaviour : MonoBehaviour
         decorativeArrow.SetActive(true);
     }
 
-    // Update is called once per frame
+    // Calculates the center of the screen and make a direcction between it and the spawnPoint
     void Update()
     {        
         Vector3 mouseWorldPosition = Vector3.zero;
@@ -51,6 +51,7 @@ public class BowBehaviour : MonoBehaviour
         canShoot = true;
     }
 
+    //Methos use only for animation
     private IEnumerator getArrowAnimation()
     {
         decorativeArrow.SetActive(false);
