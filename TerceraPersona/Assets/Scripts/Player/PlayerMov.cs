@@ -17,6 +17,10 @@ public class PlayerMov : MonoBehaviour
     private bool readyToJump = true;
 
     [Header("Dodge")]
+    [SerializeField] private float DodgeCD;
+    [SerializeField] private float DodgeForce = 1.5f;
+    [SerializeField] private float DodgeDuration = 1.59f;
+    private bool isDodging = false;
     private bool canDodge = true; 
 
     [Header("Keybinds")]
@@ -49,6 +53,7 @@ public class PlayerMov : MonoBehaviour
     private MovementState state;
 
     public bool Combat { get => combat; set => combat = value; }
+    public bool IsDodging { get => isDodging; set => isDodging = value; }
 
     private enum MovementState
     {
@@ -75,7 +80,7 @@ public class PlayerMov : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0;
-        Inputs();
+        if(canMove) Inputs();
         SpeedControl();
         StateHandler();
     }
@@ -83,6 +88,12 @@ public class PlayerMov : MonoBehaviour
     private void FixedUpdate()
     { 
         if(canMove) MovePlayer();
+
+        if (isDodging && (horizontalInput != 0 || VerticalInput != 0))
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * DodgeForce, ForceMode.VelocityChange);
+            Debug.Log("Roll");
+        }
     }
 
     private void StateHandler()
@@ -110,6 +121,7 @@ public class PlayerMov : MonoBehaviour
             state = MovementState.air;
             anim.SetBool("Jump", true);
         }
+        
     }
 
     private void Inputs()
@@ -147,11 +159,11 @@ public class PlayerMov : MonoBehaviour
             anim.SetTrigger("Shot");
         }
 
-        if (Input.GetKeyDown(dodgeKey))
+        if (Input.GetKeyDown(dodgeKey) && canDodge && (horizontalInput != 0 || VerticalInput != 0))
         {
-            moveDirection = orientation.forward * VerticalInput + orientation.right * horizontalInput;
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * 200f, ForceMode.Force);
-            Debug.Log("Dogde");
+            canDodge = false;
+            StartCoroutine(roll());
+            Invoke(nameof(finishRoll), DodgeCD);
         }
     }
 
@@ -188,9 +200,19 @@ public class PlayerMov : MonoBehaviour
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
-    private void Roll()
+    private void finishRoll()
     {
+        canDodge = true;
+    }
 
+    private IEnumerator roll()
+    {
+        canMove = false;
+        isDodging = true;
+        anim.SetTrigger("Roll");
+        yield return new WaitForSeconds(DodgeDuration);
+        isDodging = false;
+        canMove = true;
     }
 
     private void ResetJump()

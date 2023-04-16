@@ -10,6 +10,7 @@ public class BowBehaviour : MonoBehaviour
     [SerializeField] private float shotCD;
     private bool canShoot = true;
     [SerializeField] private LayerMask aimColliderLayerMask = new LayerMask();
+    [SerializeField] private PlayerMov player;
 
     [Header ("Keybinds")]
     [SerializeField] private KeyCode shotKey = KeyCode.Mouse0;
@@ -36,7 +37,7 @@ public class BowBehaviour : MonoBehaviour
             mouseWorldPosition = raycastHit.point; 
         }
 
-        if (Input.GetKey(shotKey) && canShoot)
+        if (Input.GetKey(shotKey) && canShoot && !player.IsDodging)
         {
             StartCoroutine(getArrowAnimation());
             canShoot = false;
