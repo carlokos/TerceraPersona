@@ -6,6 +6,7 @@ public class PlayerMov : MonoBehaviour
 {
     [Header("Movement")]
     private float moveSpeed;
+    private bool canMove = true;
     [SerializeField] private float sprintSpeed;
     [SerializeField] private float groundDrag;
     
@@ -15,9 +16,17 @@ public class PlayerMov : MonoBehaviour
     [SerializeField] private float airMultiplier;
     private bool readyToJump = true;
 
+    [Header("Dodge")]
+    [SerializeField] private float DodgeCD;
+    [SerializeField] private float DodgeForce = 1.5f;
+    [SerializeField] private float DodgeDuration = 1.59f;
+    private bool isDodging = false;
+    private bool canDodge = true; 
+
     [Header("Keybinds")]
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode drawWeaponKey = KeyCode.E;
+    [SerializeField] private KeyCode dodgeKey = KeyCode.Mouse1;
 
     [Header("Ground Check")]
     [SerializeField] private float playerHeight;
@@ -44,6 +53,7 @@ public class PlayerMov : MonoBehaviour
     private MovementState state;
 
     public bool Combat { get => combat; set => combat = value; }
+    public bool IsDodging { get => isDodging; set => isDodging = value; }
 
     private enum MovementState
     {
@@ -51,6 +61,7 @@ public class PlayerMov : MonoBehaviour
         combat,
         air
     }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -69,14 +80,20 @@ public class PlayerMov : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0;
-        Inputs();
+        if(canMove) Inputs();
         SpeedControl();
         StateHandler();
     }
 
     private void FixedUpdate()
-    {
-        MovePlayer();
+    { 
+        if(canMove) MovePlayer();
+
+        if (isDodging && (horizontalInput != 0 || VerticalInput != 0))
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * DodgeForce, ForceMode.VelocityChange);
+            Debug.Log("Roll");
+        }
     }
 
     private void StateHandler()
@@ -85,8 +102,8 @@ public class PlayerMov : MonoBehaviour
         if(grounded && !combat)
         {
             state = MovementState.exploring;
-            anim.SetBool("Combat", false);
             anim.SetBool("Jump", false);
+            canDodge = true;
             moveSpeed = sprintSpeed;
         }
 
@@ -100,9 +117,11 @@ public class PlayerMov : MonoBehaviour
         // Mode Air
         else
         {
+            canDodge = false;
             state = MovementState.air;
             anim.SetBool("Jump", true);
         }
+        
     }
 
     private void Inputs()
@@ -116,26 +135,35 @@ public class PlayerMov : MonoBehaviour
         if(Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
-
             Jump();
-
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
+        //Use or not use the bow
         if (Input.GetKeyDown(drawWeaponKey) && !combat){
             combat = true;
             equipBow();
             cameraManager.SwitchCamera(ThirdPersonCamera.CameraStyle.Combat);
         }
+
         else if(Input.GetKeyDown(drawWeaponKey) && combat){ 
             combat = false;
+            anim.SetBool("Combat", false);
             disarmBow();
             cameraManager.SwitchCamera(ThirdPersonCamera.CameraStyle.Basic);
         }
 
+        //Triggers the shot animation
         if(Input.GetKey(KeyCode.Mouse0) && combat && bowCD.CanShoot)
         {
             anim.SetTrigger("Shot");
+        }
+
+        if (Input.GetKeyDown(dodgeKey) && canDodge && (horizontalInput != 0 || VerticalInput != 0))
+        {
+            canDodge = false;
+            StartCoroutine(roll());
+            Invoke(nameof(finishRoll), DodgeCD);
         }
     }
 
@@ -153,6 +181,7 @@ public class PlayerMov : MonoBehaviour
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
     }
 
+    //Limits the speed of the player to feel it more smoothly
     private void SpeedControl()
     {
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
@@ -166,9 +195,24 @@ public class PlayerMov : MonoBehaviour
 
     private void Jump()
     {
-        //reset y velocity
+        //reset Y-velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    private void finishRoll()
+    {
+        canDodge = true;
+    }
+
+    private IEnumerator roll()
+    {
+        canMove = false;
+        isDodging = true;
+        anim.SetTrigger("Roll");
+        yield return new WaitForSeconds(DodgeDuration);
+        isDodging = false;
+        canMove = true;
     }
 
     private void ResetJump()
