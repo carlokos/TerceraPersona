@@ -10,7 +10,6 @@ public class BowBehaviour : MonoBehaviour
     [SerializeField] private float shotCD;
     private bool canShoot = true;
     [SerializeField] private LayerMask aimColliderLayerMask = new LayerMask();
-    [SerializeField] private PlayerMov player;
 
     [Header ("Keybinds")]
     [SerializeField] private KeyCode shotKey = KeyCode.Mouse0;
@@ -26,7 +25,7 @@ public class BowBehaviour : MonoBehaviour
         decorativeArrow.SetActive(true);
     }
 
-    // Calculates the center of the screen and make a direcction between it and the spawnPoint
+    // Update is called once per frame
     void Update()
     {        
         Vector3 mouseWorldPosition = Vector3.zero;
@@ -37,7 +36,7 @@ public class BowBehaviour : MonoBehaviour
             mouseWorldPosition = raycastHit.point; 
         }
 
-        if (Input.GetKey(shotKey) && canShoot && !player.IsDodging)
+        if (Input.GetKey(shotKey) && canShoot)
         {
             StartCoroutine(getArrowAnimation());
             canShoot = false;
@@ -52,7 +51,6 @@ public class BowBehaviour : MonoBehaviour
         canShoot = true;
     }
 
-    //Methos use only for animation
     private IEnumerator getArrowAnimation()
     {
         decorativeArrow.SetActive(false);
