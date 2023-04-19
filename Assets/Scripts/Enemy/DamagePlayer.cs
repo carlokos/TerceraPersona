@@ -9,12 +9,23 @@ public class DamagePlayer : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Ha entrado");
             if (other.GetComponent<PlayerCombat>().CanBeDamaged)
             {
                 other.transform.GetComponentInParent<PlayerMov>().transform.position = SpawnPoint.transform.position;
                 other.GetComponent<PlayerCombat>().damagePlayer();
             }
         }
-    }   
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            if (other.GetComponent<PlayerCombat>().CanBeDamaged)
+            {
+                other.transform.GetComponentInParent<PlayerMov>().transform.position = SpawnPoint.transform.position;
+                other.GetComponent<PlayerCombat>().damagePlayer();
+            }
+        }
+    }
 }

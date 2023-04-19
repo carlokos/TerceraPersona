@@ -5,11 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - Arrow
+  - UI
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Arrow
   - Water
   - UI
   - 

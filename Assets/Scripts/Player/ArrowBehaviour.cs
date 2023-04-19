@@ -30,6 +30,7 @@ public class ArrowBehaviour : MonoBehaviour
         if (other.gameObject.CompareTag("Enemy")){
             other.GetComponent<DummyBehaviour>().activateHitAnimation();
         }
-        Destroy(gameObject);
+        
+        if(!other.CompareTag("UI"))Destroy(gameObject);
     }
 }
