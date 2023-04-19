@@ -22,6 +22,7 @@ public class DummyBehaviour : MonoBehaviour
         if(life <= 0)
         {
             anim.SetTrigger("dead");
+            GameManager.instance.restDummys();
             hitbox.enabled = false;
         }
     }

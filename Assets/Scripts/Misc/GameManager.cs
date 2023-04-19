@@ -1,12 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [Header ("HUD user")]
-    [SerializeField] private int mmoArrows;
-    [SerializeField] private GameObject arrowsCanvas;
+    [Header("HUD user")]
+    [SerializeField] private int dummys;
+    [SerializeField] private TextMeshProUGUI lblDummys;
+    [SerializeField] private GameObject imgDummy;
+
+    [Header("Game design")]
+    [SerializeField] private Animator doorAnim;
 
     public static GameManager instance
     {
@@ -18,13 +23,20 @@ public class GameManager : MonoBehaviour
         instance = this;
     }
 
-    public void LoseArrow()
+    private void Start()
     {
-        mmoArrows--;
+        lblDummys.text = "x " + dummys;
     }
 
-    public void GainArrows(int num)
+    public void restDummys()
     {
-        mmoArrows += num;
+        dummys -= 1;
+        lblDummys.text = "x " + dummys;
+        if (dummys <= 0)
+        {
+            doorAnim.SetTrigger("Completed");
+            lblDummys.gameObject.SetActive(false);
+            imgDummy.SetActive(false);
+        }
     }
 }

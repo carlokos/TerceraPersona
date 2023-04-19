@@ -6,21 +6,39 @@ public class PlayerCombat : MonoBehaviour
 {
     [Header("Basic References")]
     [SerializeField] private PlayerMov playerMov;
+    [SerializeField] private Animator anim;
 
-    [Header("Stun References")]
-    [SerializeField] private float hitStun;
+    private bool canBeDamaged = true;
 
-    private bool canBeDamaged;
-    
-    // Start is called before the first frame update
-    void Start()
+    public bool CanBeDamaged { get => canBeDamaged; set => canBeDamaged = value; }
+
+    public void damagePlayer()
     {
-        
+        if (canBeDamaged)
+        {
+            anim.SetTrigger("Hit");
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void disableMovement()
     {
-        
+        playerMov.CanMove = false;
+        playerMov.CanDodge = false;
+    }
+
+    public void enableMovement()
+    {
+        playerMov.CanDodge = true;
+        playerMov.CanMove = true;
+    }
+
+    public void StartRoll()
+    {
+        canBeDamaged = false;
+    }
+
+    public void finishRoll()
+    {
+        canBeDamaged = true;
     }
 }

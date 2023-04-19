@@ -55,6 +55,8 @@ public class PlayerMov : MonoBehaviour
 
     public bool Combat { get => combat; set => combat = value; }
     public bool IsDodging { get => isDodging; set => isDodging = value; }
+    public bool CanMove { get => canMove; set => canMove = value; }
+    public bool CanDodge { get => canDodge; set => canDodge = value; }
 
     private enum MovementState
     {
