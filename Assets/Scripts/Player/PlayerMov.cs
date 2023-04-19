@@ -102,7 +102,6 @@ public class PlayerMov : MonoBehaviour
         if (isDodging && (horizontalInput != 0 || VerticalInput != 0))
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * DodgeForce, ForceMode.VelocityChange);
-            Debug.Log("Roll");
         }
     }
 

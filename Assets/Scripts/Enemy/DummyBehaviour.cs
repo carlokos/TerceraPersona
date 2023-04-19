@@ -6,12 +6,12 @@ public class DummyBehaviour : MonoBehaviour
 {
     [SerializeField] private float life;
     private Animator anim;
-    private Collider collider;
+    private Collider hitbox;
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
-        collider = GetComponent<Collider>();
+        hitbox = GetComponent<Collider>();
     }
 
     //Methos that manage the dummy's health
@@ -22,7 +22,7 @@ public class DummyBehaviour : MonoBehaviour
         if(life <= 0)
         {
             anim.SetTrigger("dead");
-            collider.enabled = false;
+            hitbox.enabled = false;
         }
     }
 }
