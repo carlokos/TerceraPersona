@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 492114884202286304}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -372,6 +372,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -749876600356752593, guid: e6e99497878b3b24ebeeb0dfb9f9aa37, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: -749876600356752593, guid: e6e99497878b3b24ebeeb0dfb9f9aa37, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 44.17
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e6e99497878b3b24ebeeb0dfb9f9aa37, type: 3}
       propertyPath: m_Name
       value: Erika Archer
@@ -430,6 +438,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1563762065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726555294910002444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a72f43ee7c820e345b57b96b751dd932, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerMov: {fileID: 492114884202286304}
+  anim: {fileID: 492114883484518489}
 --- !u!4 &6681127804115866703 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6515712193588681746, guid: e6e99497878b3b24ebeeb0dfb9f9aa37, type: 3}

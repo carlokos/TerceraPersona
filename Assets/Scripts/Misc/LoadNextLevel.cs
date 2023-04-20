@@ -7,6 +7,7 @@ public class LoadNextLevel : MonoBehaviour
 {
     //script basico que carga el siguiente nivel 
     private Scene SceneToLoad;
+    [SerializeField] private bool FinalLevel;
 
     private void Awake()
     {
@@ -22,7 +23,10 @@ public class LoadNextLevel : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            loadNextLevelScene();
+            if (!FinalLevel)
+                loadNextLevelScene();
+            else
+                SceneManager.LoadScene(0);
         }
     }
 }

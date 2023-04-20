@@ -9,9 +9,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int dummys;
     [SerializeField] private TextMeshProUGUI lblDummys;
     [SerializeField] private GameObject imgDummy;
+    [SerializeField] private TextMeshProUGUI lblTime;
+    [SerializeField] private bool hasTime;
 
     [Header("Game design")]
     [SerializeField] private Animator doorAnim;
+    private float actualTime = 0f;
 
     public static GameManager instance
     {
@@ -26,6 +29,17 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         lblDummys.text = "x " + dummys;
+    }
+
+    private void Update()
+    {
+        if (hasTime)
+        {
+            actualTime += Time.deltaTime;
+            int min = Mathf.FloorToInt(actualTime / 60f);
+            int seg = Mathf.FloorToInt(actualTime % 60f);
+            lblTime.text = min.ToString("00") + ":" + seg.ToString("00");
+        }
     }
 
     public void restDummys()
